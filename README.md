@@ -4,12 +4,12 @@
 
 ## How to install
 ```
-npm install consistent_hashing
+npm install jump-consistent-hash
 ```
 
 ## How to use
 ```
-const { jumpConsistentHash } = require('consistent_hashing');
+const { jumpConsistentHash } = require('jump-consistent-hash');
 const bucket = jumpConsistentHash('0.0.0.0:1:user', 4);
 ```
 
