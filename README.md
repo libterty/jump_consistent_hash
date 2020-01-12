@@ -10,6 +10,7 @@
 ## How to use
 ```
 const { jumpConsistentHash } = require('jumpConsistentHash');
+```
 
 ## API
 Takes a key and total of buckets
