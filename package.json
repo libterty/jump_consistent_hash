@@ -1,5 +1,5 @@
 {
-  "name": "consistent_hasing",
+  "name": "consistent_hashing",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
