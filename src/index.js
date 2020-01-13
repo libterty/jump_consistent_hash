@@ -1,3 +1,4 @@
+const format = require('nanoid/generate');
 const zero = BigInt(0);
 const shift = BigInt(8);
 const bigShift = BigInt(16);
@@ -5,34 +6,18 @@ const byte = BigInt(255);
 
 /**
  * @param {user IP:user Info} str
- * @return {byte array}
+ * @return {binary}
  */
-function toUTF8Array(str) {
-  var utf8 = [];
-  for (var i = 0; i < str.length; i++) {
-    var charcode = str.charCodeAt(i);
-    if (charcode < 0x80) utf8.push(charcode);
-    else if (charcode < 0x800) {
-      utf8.push(0xc0 | (charcode >> 6), 0x80 | (charcode & 0x3f));
-    } else if (charcode < 0xd800 || charcode >= 0xe000) {
-      utf8.push(
-        0xe0 | (charcode >> 12),
-        0x80 | ((charcode >> 6) & 0x3f),
-        0x80 | (charcode & 0x3f)
-      );
-    } else {
-      i++;
-      charcode =
-        0x10000 + (((charcode & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
-      utf8.push(
-        0xf0 | (charcode >> 18),
-        0x80 | ((charcode >> 12) & 0x3f),
-        0x80 | ((charcode >> 6) & 0x3f),
-        0x80 | (charcode & 0x3f)
-      );
-    }
+function unicodeToBinary(str) {
+  str = format(str, 8);
+  const len = str.length;
+  let n = zero;
+  for (let i = 0; i < len; i++) {
+    const bits = BigInt(str.codePointAt(i));
+    n = (n << (bits > byte ? bigShift : shift)) + bits;
   }
-  return utf8;
+  const bin = n.toString(2);
+  return bin.padStart(8 * Math.ceil(bin.length / 8), 0);
 }
 
 /**
@@ -55,7 +40,7 @@ function bytesToBigInt(bytes) {
  * @return {number} Bucket from `[0, buckets]` range
  */
 function jumpConsistentHash(key, buckets) {
-  let strToArr = toUTF8Array(key);
+  let strToArr = unicodeToBinary(key);
   let keyBigInt = bytesToBigInt(strToArr);
   let b = BigInt(-1);
   let j = BigInt(0);
@@ -74,5 +59,4 @@ function jumpConsistentHash(key, buckets) {
   return Number(b);
 }
 
-module.exports = { toUTF8Array, bytesToBigInt, jumpConsistentHash };
-
+module.exports = { unicodeToBinary, bytesToBigInt, jumpConsistentHash };
