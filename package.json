@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "chai": "^4.2.0",
-    "mocha": "^7.0.0",
+    "mocha": "^10.2.0",
     "nanoid": "^2.1.9",
     "sinon": "^8.0.4"
   },
